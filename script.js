@@ -1,406 +1,714 @@
-/* ==========================================================================
-   Prospect Local — script.js
-   Protótipo 100% front-end, sem backend e sem bibliotecas externas.
+/* ============================================================
+   PROSPECT LOCAL
+   script.js
+   ============================================================ */
 
-   IDs/classes esperados no HTML (ajuste se o seu markup usar outros nomes):
-   - #searchBtn        -> botão "Buscar Empresas"
-   - #companyList       -> container onde os cards das empresas serão inseridos
-   - #modalOverlay       -> overlay/fundo do modal (clique fora fecha)
-   - #modal          -> caixa do modal
-   - #closeModalBtn      -> botão "Fechar" dentro do modal
-   - #modalName, #modalCategory, #modalCity, #modalPhone,
-    #modalWebsite, #modalInstagram, #modalFacebook,
-    #modalAddress, #modalScore        -> campos exibidos no modal
-   - #loadingOverlay      -> indicador de carregamento da busca
-   - #toastContainer      -> container onde os toasts serão empilhados
+"use strict";
 
-   Se algum elemento não existir no HTML, o script cria um fallback simples
-   automaticamente para não quebrar a demonstração.
-   ========================================================================== */
 
-(function () {
- "use strict";
+/* ============================================================
+   DADOS
+   ============================================================ */
 
- /* ------------------------------------------------------------------ *
-  * 1. DADOS FICTÍCIOS
-  * ------------------------------------------------------------------ */
+const empresas = [
 
- var NOMES = [
-  "Padaria Pão Dourado", "Auto Peças Silva", "Clínica OdontoVida",
-  "Studio Beleza & Cia", "Mercado Bom Preço", "Academia PowerFit",
-  "Pet Shop Amigo Fiel", "Restaurante Sabor Caseiro", "Escritório Contábil Lima",
-  "Loja Moda Urbana", "Imobiliária Novo Lar", "Oficina Mecânica Turbo",
-  "Farmácia Vida Plena", "Barbearia Corte Fino", "Distribuidora Central"
- ];
+    {
+        id: 1,
+        nome: "Padaria Pão Dourado",
+        categoria: "Restaurante",
+        cidade: "São Paulo",
+        telefone: "(11) 3456-7890",
+        website: "Não possui",
+        instagram: "@paodouradosp",
+        facebook: "facebook.com/paodouradosp",
+        endereco: "Rua das Flores, 123 - São Paulo, SP",
+        score: 82
+    },
 
- var CATEGORIAS = [
-  "Alimentação", "Automotivo", "Saúde", "Beleza e Estética",
-  "Varejo", "Fitness", "Pet Shop", "Serviços Contábeis",
-  "Moda", "Imóveis", "Manutenção", "Farmácia", "Distribuição"
- ];
+    {
+        id: 2,
+        nome: "Salão Beleza Real",
+        categoria: "Salão de Beleza",
+        cidade: "Rio de Janeiro",
+        telefone: "(21) 2345-6789",
+        website: "Não possui",
+        instagram: "@belezareal",
+        facebook: "facebook.com/belezareal",
+        endereco: "Rua das Palmeiras, 456 - Rio de Janeiro, RJ",
+        score: 75
+    },
 
- var CIDADES = [
-  "Brasília - DF", "São Paulo - SP", "Rio de Janeiro - RJ",
-  "Belo Horizonte - MG", "Curitiba - PR", "Porto Alegre - RS",
-  "Salvador - BA", "Fortaleza - CE", "Recife - PE", "Goiânia - GO"
- ];
+    {
+        id: 3,
+        nome: "Oficina do Zé",
+        categoria: "Oficina Mecânica",
+        cidade: "Belo Horizonte",
+        telefone: "(31) 3344-5566",
+        website: "Não possui",
+        instagram: "@oficinad oze",
+        facebook: "facebook.com/oficinadoze",
+        endereco: "Av. Central, 789 - Belo Horizonte, MG",
+        score: 91
+    },
 
- var RUAS = [
-  "Rua das Flores", "Av. Central", "Rua 24 de Maio", "Av. Paulista",
-  "Rua das Palmeiras", "Quadra 12", "Rua do Comércio", "Av. Brasil",
-  "Rua Sete de Setembro", "Alameda dos Ipês"
- ];
+    {
+        id: 4,
+        nome: "Boutique Elegance",
+        categoria: "Loja de Roupas",
+        cidade: "Curitiba",
+        telefone: "(41) 3322-1100",
+        website: "Possui",
+        instagram: "@boutiqueelegance",
+        facebook: "facebook.com/boutiqueelegance",
+        endereco: "Rua do Comércio, 100 - Curitiba, PR",
+        score: 45
+    },
 
- function aleatorio(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
- }
+    {
+        id: 5,
+        nome: "Clínica Vida Saudável",
+        categoria: "Clínica",
+        cidade: "Brasília",
+        telefone: "(61) 3987-6543",
+        website: "Não possui",
+        instagram: "@vidasaudavel",
+        facebook: "facebook.com/vidasaudavel",
+        endereco: "Quadra 12, 200 - Brasília, DF",
+        score: 88
+    },
 
- function itemAleatorio(lista) {
-  return lista[aleatorio(0, lista.length - 1)];
- }
+    {
+        id: 6,
+        nome: "Pet Shop Amigo Fiel",
+        categoria: "Pet Shop",
+        cidade: "São Paulo",
+        telefone: "(11) 4455-6677",
+        website: "Não possui",
+        instagram: "@amigofiel",
+        facebook: "facebook.com/amigofiel",
+        endereco: "Av. Brasil, 350 - São Paulo, SP",
+        score: 70
+    },
 
- function gerarTelefone() {
-  var ddd = aleatorio(11, 99);
-  var parte1 = aleatorio(90000, 99999);
-  var parte2 = aleatorio(1000, 9999);
-  return "(" + ddd + ") " + parte1 + "-" + parte2;
- }
+    {
+        id: 7,
+        nome: "Restaurante Sabor da Terra",
+        categoria: "Restaurante",
+        cidade: "Rio de Janeiro",
+        telefone: "(21) 3211-9900",
+        website: "Não possui",
+        instagram: "@sabordaterra",
+        facebook: "facebook.com/sabordaterra",
+        endereco: "Rua 24 de Maio, 400 - Rio de Janeiro, RJ",
+        score: 63
+    },
 
- function slugify(texto) {
-  return texto
-   .toLowerCase()
-   .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-   .replace(/[^a-z0-9]+/g, "");
- }
+    {
+        id: 8,
+        nome: "Studio Corte & Cia",
+        categoria: "Salão de Beleza",
+        cidade: "Belo Horizonte",
+        telefone: "(31) 3200-1122",
+        website: "Possui",
+        instagram: "@cortecia",
+        facebook: "facebook.com/cortecia",
+        endereco: "Rua das Flores, 550 - Belo Horizonte, MG",
+        score: 38
+    },
 
- function gerarEmpresa(id) {
-  var nome = NOMES[id % NOMES.length];
-  var slug = slugify(nome);
-  var score = aleatorio(0, 100);
+    {
+        id: 9,
+        nome: "Auto Center Rodas Novas",
+        categoria: "Oficina Mecânica",
+        cidade: "Curitiba",
+        telefone: "(41) 3455-8899",
+        website: "Não possui",
+        instagram: "@rodasnovas",
+        facebook: "facebook.com/rodasnovas",
+        endereco: "Av. Brasil, 600 - Curitiba, PR",
+        score: 79
+    },
 
-  return {
-   id: id,
-   nome: nome,
-   categoria: itemAleatorio(CATEGORIAS),
-   cidade: itemAleatorio(CIDADES),
-   telefone: gerarTelefone(),
-   website: "www." + slug + ".com.br",
-   instagram: "@" + slug,
-   facebook: "facebook.com/" + slug,
-   endereco: itemAleatorio(RUAS) + ", " + aleatorio(10, 999),
-   score: score
-  };
- }
+    {
+        id: 10,
+        nome: "Clínica Odontológica Sorriso",
+        categoria: "Clínica",
+        cidade: "Brasília",
+        telefone: "(61) 3222-4433",
+        website: "Não possui",
+        instagram: "@sorrisoclinica",
+        facebook: "facebook.com/sorrisoclinica",
+        endereco: "Quadra 12, 700 - Brasília, DF",
+        score: 85
+    }
 
- function gerarEmpresas(quantidade) {
-  var lista = [];
-  for (var i = 1; i <= quantidade; i++) {
-   lista.push(gerarEmpresa(i));
-  }
-  return lista;
- }
+];
 
- var QUANTIDADE_MINIMA = 12; // mínimo exigido: 10
- var empresas = gerarEmpresas(QUANTIDADE_MINIMA);
 
- /* ------------------------------------------------------------------ *
-  * 2. UTILITÁRIOS DE COR DE SCORE
-  * ------------------------------------------------------------------ */
+/* ============================================================
+   ELEMENTOS DO HTML
+   ============================================================ */
 
- function corDoScore(score) {
-  if (score >= 80) return { classe: "score-verde", cor: "#2e7d32", label: "Alto" };
-  if (score >= 50) return { classe: "score-amarelo", cor: "#f9a825", label: "Médio" };
-  return { classe: "score-vermelho", cor: "#c62828", label: "Baixo" };
- }
+const tabelaCorpo =
+    document.getElementById("tabela-corpo");
 
- /* ------------------------------------------------------------------ *
-  * 3. FALLBACKS DE ELEMENTOS (garante que a demo funcione mesmo que o
-  *  HTML não tenha todos os elementos previstos)
-  * ------------------------------------------------------------------ */
+const buscaForm =
+    document.getElementById("busca-form");
 
- function garantirElemento(id, criarFn) {
-  var el = document.getElementById(id);
-  if (!el) {
-   el = criarFn();
-   el.id = id;
-   document.body.appendChild(el);
-  }
-  return el;
- }
+const buscaInput =
+    document.getElementById("busca-input");
 
- var companyList = garantirElemento("companyList", function () {
-  var div = document.createElement("div");
-  div.style.display = "grid";
-  div.style.gridTemplateColumns = "repeat(auto-fill, minmax(260px, 1fr))";
-  div.style.gap = "16px";
-  div.style.padding = "16px";
-  return div;
- });
+const filtrosForm =
+    document.getElementById("filtros-form");
 
- var toastContainer = garantirElemento("toastContainer", function () {
-  var div = document.createElement("div");
-  div.style.position = "fixed";
-  div.style.top = "16px";
-  div.style.right = "16px";
-  div.style.zIndex = "9999";
-  div.style.display = "flex";
-  div.style.flexDirection = "column";
-  div.style.gap = "8px";
-  return div;
- });
+const filtroCidade =
+    document.getElementById("filtro-cidade");
 
- var loadingOverlay = garantirElemento("loadingOverlay", function () {
-  var div = document.createElement("div");
-  div.style.position = "fixed";
-  div.style.inset = "0";
-  div.style.background = "rgba(0,0,0,0.45)";
-  div.style.display = "none";
-  div.style.alignItems = "center";
-  div.style.justifyContent = "center";
-  div.style.zIndex = "9998";
-  div.style.color = "#fff";
-  div.style.fontSize = "18px";
-  div.style.fontFamily = "sans-serif";
-  div.innerText = "Buscando empresas...";
-  return div;
- });
+const filtroCategoria =
+    document.getElementById("filtro-categoria");
 
- var modalOverlay = garantirElemento("modalOverlay", function () {
-  var div = document.createElement("div");
-  div.style.position = "fixed";
-  div.style.inset = "0";
-  div.style.background = "rgba(0,0,0,0.55)";
-  div.style.display = "none";
-  div.style.alignItems = "center";
-  div.style.justifyContent = "center";
-  div.style.zIndex = "10000";
-  return div;
- });
+const filtroScore =
+    document.getElementById("filtro-score-minimo");
 
- var modal = document.getElementById("modal");
- if (!modal) {
-  modal = document.createElement("div");
-  modal.id = "modal";
-  modal.style.background = "#fff";
-  modal.style.borderRadius = "12px";
-  modal.style.padding = "24px";
-  modal.style.maxWidth = "420px";
-  modal.style.width = "90%";
-  modal.style.fontFamily = "sans-serif";
-  modal.style.boxShadow = "0 10px 30px rgba(0,0,0,0.25)";
-  modal.innerHTML =
-   '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-   ' <h2 id="modalName" style="margin:0;font-size:20px;"></h2>' +
-   ' <button id="closeModalBtn" aria-label="Fechar" style="border:none;background:transparent;font-size:20px;cursor:pointer;">&times;</button>' +
-   '</div>' +
-   '<p><strong>Categoria:</strong> <span id="modalCategory"></span></p>' +
-   '<p><strong>Cidade:</strong> <span id="modalCity"></span></p>' +
-   '<p><strong>Telefone:</strong> <span id="modalPhone"></span></p>' +
-   '<p><strong>Website:</strong> <span id="modalWebsite"></span></p>' +
-   '<p><strong>Instagram:</strong> <span id="modalInstagram"></span></p>' +
-   '<p><strong>Facebook:</strong> <span id="modalFacebook"></span></p>' +
-   '<p><strong>Endereço:</strong> <span id="modalAddress"></span></p>' +
-   '<p><strong>Score:</strong> <span id="modalScore" style="font-weight:bold;padding:2px 10px;border-radius:12px;color:#fff;"></span></p>';
-  modalOverlay.appendChild(modal);
- }
+const modal =
+    document.getElementById("modal-detalhes");
 
- if (!modalOverlay.contains(modal)) {
-  modalOverlay.appendChild(modal);
- }
+const modalFechar =
+    document.getElementById("modal-fechar");
 
- var closeModalBtn = document.getElementById("closeModalBtn");
+const toastContainer =
+    document.getElementById("toast-container");
 
- var searchBtn = document.getElementById("searchBtn");
- if (!searchBtn) {
-  searchBtn = document.createElement("button");
-  searchBtn.id = "searchBtn";
-  searchBtn.innerText = "Buscar Empresas";
-  searchBtn.style.margin = "16px";
-  searchBtn.style.padding = "10px 20px";
-  searchBtn.style.cursor = "pointer";
-  document.body.insertBefore(searchBtn, document.body.firstChild);
- }
 
- /* ------------------------------------------------------------------ *
-  * 4. TOASTS
-  * ------------------------------------------------------------------ */
+/* ============================================================
+   FUNÇÃO PARA IDENTIFICAR O SCORE
+   ============================================================ */
 
- function mostrarToast(mensagem, tipo) {
-  tipo = tipo || "info"; // "success" | "error" | "info"
+function obterClasseScore(score) {
 
-  var cores = {
-   success: "#2e7d32",
-   error: "#c62828",
-   info: "#1565c0"
-  };
+    if (score >= 80) {
 
-  var toast = document.createElement("div");
-  toast.innerText = mensagem;
-  toast.style.background = cores[tipo] || cores.info;
-  toast.style.color = "#fff";
-  toast.style.padding = "12px 18px";
-  toast.style.borderRadius = "8px";
-  toast.style.fontFamily = "sans-serif";
-  toast.style.fontSize = "14px";
-  toast.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
-  toast.style.opacity = "0";
-  toast.style.transform = "translateY(-10px)";
-  toast.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+        return "score-alto";
 
-  toastContainer.appendChild(toast);
+    }
 
-  // força reflow para animar a entrada
-  requestAnimationFrame(function () {
-   toast.style.opacity = "1";
-   toast.style.transform = "translateY(0)";
-  });
+    if (score >= 50) {
 
-  setTimeout(function () {
-   toast.style.opacity = "0";
-   toast.style.transform = "translateY(-10px)";
-   setTimeout(function () {
-    if (toast.parentNode) toast.parentNode.removeChild(toast);
-   }, 300);
-  }, 3000);
- }
+        return "score-medio";
 
- /* ------------------------------------------------------------------ *
-  * 5. RENDERIZAÇÃO DOS CARDS DE EMPRESA
-  * ------------------------------------------------------------------ */
+    }
 
- function criarCardEmpresa(empresa) {
-  var scoreInfo = corDoScore(empresa.score);
+    return "score-baixo";
+}
 
-  var card = document.createElement("div");
-  card.className = "company-card";
-  card.setAttribute("data-id", empresa.id);
-  card.style.border = "1px solid #e0e0e0";
-  card.style.borderRadius = "10px";
-  card.style.padding = "16px";
-  card.style.cursor = "pointer";
-  card.style.fontFamily = "sans-serif";
-  card.style.background = "#fff";
-  card.style.transition = "transform 0.15s ease, box-shadow 0.15s ease";
 
-  card.addEventListener("mouseenter", function () {
-   card.style.transform = "translateY(-2px)";
-   card.style.boxShadow = "0 6px 16px rgba(0,0,0,0.12)";
-  });
-  card.addEventListener("mouseleave", function () {
-   card.style.transform = "translateY(0)";
-   card.style.boxShadow = "none";
-  });
+/* ============================================================
+   ATUALIZAR DASHBOARD
+   ============================================================ */
 
-  card.innerHTML =
-   '<h3 style="margin:0 0 6px;font-size:16px;">' + empresa.nome + '</h3>' +
-   '<p style="margin:0 0 4px;color:#555;font-size:13px;">' + empresa.categoria + ' • ' + empresa.cidade + '</p>' +
-   '<span style="display:inline-block;margin-top:6px;padding:2px 10px;border-radius:12px;color:#fff;font-size:12px;font-weight:bold;background:' +
-   scoreInfo.cor + ';">Score: ' + empresa.score + ' (' + scoreInfo.label + ')</span>';
+function atualizarDashboard(lista) {
 
-  card.addEventListener("click", function () {
-   abrirModal(empresa);
-  });
+    const empresasAnalisadas =
+        document.getElementById(
+            "card-empresas-analisadas"
+        );
 
-  return card;
- }
+    const empresasSemWebsite =
+        document.getElementById(
+            "card-empresas-sem-website"
+        );
 
- function renderizarEmpresas(lista) {
-  companyList.innerHTML = "";
-  lista.forEach(function (empresa) {
-   companyList.appendChild(criarCardEmpresa(empresa));
-  });
- }
+    const scoreMedio =
+        document.getElementById(
+            "card-score-medio"
+        );
 
- /* ------------------------------------------------------------------ *
-  * 6. MODAL: abrir / fechar
-  * ------------------------------------------------------------------ */
+    const cidadesConsultadas =
+        document.getElementById(
+            "card-cidades-consultadas"
+        );
 
- function abrirModal(empresa) {
-  var scoreInfo = corDoScore(empresa.score);
 
-  setTextoSeExistir("modalName", empresa.nome);
-  setTextoSeExistir("modalCategory", empresa.categoria);
-  setTextoSeExistir("modalCity", empresa.cidade);
-  setTextoSeExistir("modalPhone", empresa.telefone);
-  setTextoSeExistir("modalWebsite", empresa.website);
-  setTextoSeExistir("modalInstagram", empresa.instagram);
-  setTextoSeExistir("modalFacebook", empresa.facebook);
-  setTextoSeExistir("modalAddress", empresa.endereco);
+    /* Total */
 
-  var modalScoreEl = document.getElementById("modalScore");
-  if (modalScoreEl) {
-   modalScoreEl.innerText = empresa.score + " (" + scoreInfo.label + ")";
-   modalScoreEl.style.background = scoreInfo.cor;
-  }
+    empresasAnalisadas.textContent =
+        lista.length;
 
-  modalOverlay.style.display = "flex";
-  document.body.style.overflow = "hidden";
- }
 
- function fecharModal() {
-  modalOverlay.style.display = "none";
-  document.body.style.overflow = "";
- }
+    /* Empresas sem website */
 
- function setTextoSeExistir(id, valor) {
-  var el = document.getElementById(id);
-  if (el) el.innerText = valor;
- }
+    const semWebsite =
+        lista.filter(function (empresa) {
 
- // Fechar pelo botão
- document.addEventListener("click", function (event) {
-  if (event.target && event.target.id === "closeModalBtn") {
-   fecharModal();
-  }
- });
+            return empresa.website === "Não possui";
 
- // Fechar clicando fora do modal (no overlay, fora da caixa)
- modalOverlay.addEventListener("click", function (event) {
-  if (event.target === modalOverlay) {
-   fecharModal();
-  }
- });
+        }).length;
 
- // Fechar com tecla ESC (extra, não quebra nada se não usado)
- document.addEventListener("keydown", function (event) {
-  if (event.key === "Escape" && modalOverlay.style.display === "flex") {
-   fecharModal();
-  }
- });
 
- /* ------------------------------------------------------------------ *
-  * 7. SIMULAÇÃO DE BUSCA
-  * ------------------------------------------------------------------ */
+    empresasSemWebsite.textContent =
+        semWebsite;
 
- function simularBusca() {
-  loadingOverlay.style.display = "flex";
-  searchBtn.disabled = true;
 
-  setTimeout(function () {
-   // Gera um novo conjunto de empresas fictícias a cada busca
-   empresas = gerarEmpresas(QUANTIDADE_MINIMA);
-   renderizarEmpresas(empresas);
+    /* Score médio */
 
-   loadingOverlay.style.display = "none";
-   searchBtn.disabled = false;
+    if (lista.length > 0) {
 
-   mostrarToast("Consulta concluída", "success");
-  }, 2000);
- }
+        const soma =
+            lista.reduce(function (total, empresa) {
 
- searchBtn.addEventListener("click", simularBusca);
+                return total + empresa.score;
 
- /* ------------------------------------------------------------------ *
-  * 8. INICIALIZAÇÃO
-  * ------------------------------------------------------------------ */
+            }, 0);
 
- document.addEventListener("DOMContentLoaded", function () {
-  renderizarEmpresas(empresas);
- });
+        const media =
+            Math.round(soma / lista.length);
 
- // Caso o script seja carregado após o DOMContentLoaded já ter disparado
- if (document.readyState === "interactive" || document.readyState === "complete") {
-  renderizarEmpresas(empresas);
- }
+        scoreMedio.textContent =
+            media;
 
-})();
+    } else {
+
+        scoreMedio.textContent = "0";
+
+    }
+
+
+    /* Cidades */
+
+    const cidades =
+        new Set(
+            lista.map(function (empresa) {
+
+                return empresa.cidade;
+
+            })
+        );
+
+    cidadesConsultadas.textContent =
+        cidades.size;
+}
+
+
+/* ============================================================
+   RENDERIZAR TABELA
+   ============================================================ */
+
+function renderizarTabela(lista) {
+
+    tabelaCorpo.innerHTML = "";
+
+
+    if (lista.length === 0) {
+
+        const linha =
+            document.createElement("tr");
+
+        linha.innerHTML = `
+            <td colspan="7" style="text-align:center;">
+                Nenhuma empresa encontrada.
+            </td>
+        `;
+
+        tabelaCorpo.appendChild(linha);
+
+        atualizarDashboard([]);
+
+        return;
+    }
+
+
+    lista.forEach(function (empresa) {
+
+        const linha =
+            document.createElement("tr");
+
+
+        const classeScore =
+            obterClasseScore(
+                empresa.score
+            );
+
+
+        linha.innerHTML = `
+
+            <td>
+                <strong>
+                    ${empresa.nome}
+                </strong>
+            </td>
+
+            <td>
+                ${empresa.categoria}
+            </td>
+
+            <td>
+                ${empresa.cidade}
+            </td>
+
+            <td>
+                ${empresa.telefone}
+            </td>
+
+            <td>
+                ${empresa.website}
+            </td>
+
+            <td>
+                <span class="score ${classeScore}">
+                    ${empresa.score}
+                </span>
+            </td>
+
+            <td>
+
+                <button
+                    type="button"
+                    class="btn-detalhes"
+                    data-id="${empresa.id}"
+                >
+                    Ver Detalhes
+                </button>
+
+            </td>
+
+        `;
+
+
+        tabelaCorpo.appendChild(linha);
+
+    });
+
+
+    atualizarDashboard(lista);
+}
+
+
+/* ============================================================
+   ABRIR MODAL
+   ============================================================ */
+
+function abrirModal(empresa) {
+
+    document.getElementById(
+        "modal-nome"
+    ).textContent = empresa.nome;
+
+
+    document.getElementById(
+        "modal-categoria"
+    ).textContent = empresa.categoria;
+
+
+    document.getElementById(
+        "modal-cidade"
+    ).textContent = empresa.cidade;
+
+
+    document.getElementById(
+        "modal-telefone"
+    ).textContent = empresa.telefone;
+
+
+    document.getElementById(
+        "modal-endereco"
+    ).textContent = empresa.endereco;
+
+
+    document.getElementById(
+        "modal-instagram"
+    ).textContent = empresa.instagram;
+
+
+    document.getElementById(
+        "modal-facebook"
+    ).textContent = empresa.facebook;
+
+
+    document.getElementById(
+        "modal-website"
+    ).textContent = empresa.website;
+
+
+    document.getElementById(
+        "modal-score"
+    ).textContent = empresa.score;
+
+
+    modal.hidden = false;
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+/* ============================================================
+   FECHAR MODAL
+   ============================================================ */
+
+function fecharModal() {
+
+    modal.hidden = true;
+
+    document.body.style.overflow =
+        "";
+}
+
+
+modalFechar.addEventListener(
+    "click",
+    fecharModal
+);
+
+
+modal.addEventListener(
+    "click",
+    function (event) {
+
+        if (event.target === modal) {
+
+            fecharModal();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (
+            event.key === "Escape" &&
+            !modal.hidden
+        ) {
+
+            fecharModal();
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   CLIQUE NO BOTÃO "VER DETALHES"
+   ============================================================ */
+
+tabelaCorpo.addEventListener(
+    "click",
+    function (event) {
+
+        const botao =
+            event.target.closest(
+                ".btn-detalhes"
+            );
+
+
+        if (!botao) {
+
+            return;
+
+        }
+
+
+        const id =
+            Number(
+                botao.dataset.id
+            );
+
+
+        const empresa =
+            empresas.find(
+                function (empresa) {
+
+                    return empresa.id === id;
+
+                }
+            );
+
+
+        if (empresa) {
+
+            abrirModal(empresa);
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+
+function mostrarToast(
+    mensagem,
+    tipo = "sucesso"
+) {
+
+    const toast =
+        document.createElement("div");
+
+
+    toast.className =
+        `toast toast-${tipo}`;
+
+
+    toast.textContent =
+        mensagem;
+
+
+    toastContainer.appendChild(
+        toast
+    );
+
+
+    setTimeout(
+        function () {
+
+            toast.remove();
+
+        },
+        3000
+    );
+}
+
+
+/* ============================================================
+   APLICAR FILTROS
+   ============================================================ */
+
+function aplicarFiltros() {
+
+    const texto =
+        buscaInput.value
+            .trim()
+            .toLowerCase();
+
+
+    const cidade =
+        filtroCidade.value;
+
+
+    const categoria =
+        filtroCategoria.value;
+
+
+    const scoreMinimo =
+        Number(
+            filtroScore.value
+        ) || 0;
+
+
+    const resultado =
+        empresas.filter(
+            function (empresa) {
+
+
+                /* Busca */
+
+                const correspondeBusca =
+                    texto === "" ||
+
+                    empresa.nome
+                        .toLowerCase()
+                        .includes(texto) ||
+
+                    empresa.cidade
+                        .toLowerCase()
+                        .includes(texto) ||
+
+                    empresa.categoria
+                        .toLowerCase()
+                        .includes(texto);
+
+
+                /* Cidade */
+
+                const correspondeCidade =
+                    cidade === "" ||
+
+                    empresa.cidade === cidade;
+
+
+                /* Categoria */
+
+                const correspondeCategoria =
+                    categoria === "" ||
+
+                    empresa.categoria === categoria;
+
+
+                /* Score */
+
+                const correspondeScore =
+                    empresa.score >= scoreMinimo;
+
+
+                return (
+                    correspondeBusca &&
+                    correspondeCidade &&
+                    correspondeCategoria &&
+                    correspondeScore
+                );
+
+            }
+        );
+
+
+    renderizarTabela(resultado);
+
+    mostrarToast(
+        `${resultado.length} empresa(s) encontrada(s).`,
+        "sucesso"
+    );
+}
+
+
+/* ============================================================
+   FORMULÁRIO DE BUSCA
+   ============================================================ */
+
+buscaForm.addEventListener(
+    "submit",
+    function (event) {
+
+        event.preventDefault();
+
+        aplicarFiltros();
+
+    }
+);
+
+
+/* ============================================================
+   FORMULÁRIO DE FILTROS
+   ============================================================ */
+
+filtrosForm.addEventListener(
+    "submit",
+    function (event) {
+
+        event.preventDefault();
+
+        aplicarFiltros();
+
+    }
+);
+
+
+/* ============================================================
+   INICIALIZAÇÃO
+   ============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        renderizarTabela(
+            empresas
+        );
+
+    }
+);
