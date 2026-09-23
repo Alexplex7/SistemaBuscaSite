@@ -4,7 +4,7 @@ Uma plataforma web para identificação e qualificação de empresas com baixa p
 
 ## Sobre o Projeto
 
-O Prospect Local foi idealizado para ajudar agências, freelancers, consultores e equipes comerciais a encontrar oportunidades de negócios utilizando dados públicos do OpenStreetMap através da Overpass API.
+O Sistema Busca Site foi idealizado para ajudar agências, freelancers, consultores e equipes comerciais a encontrar oportunidades de negócios utilizando dados públicos do OpenStreetMap através da Overpass API.
 
 A plataforma realiza a busca de estabelecimentos comerciais, identifica empresas sem website e gera uma classificação baseada no potencial de contratação de serviços digitais.
 
