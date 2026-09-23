@@ -1,714 +1,351 @@
-/* ============================================================
-   PROSPECT LOCAL
-   script.js
-   ============================================================ */
-
-"use strict";
-
-
-/* ============================================================
-   DADOS
-   ============================================================ */
-
-const empresas = [
-
-    {
-        id: 1,
-        nome: "Padaria Pão Dourado",
-        categoria: "Restaurante",
-        cidade: "São Paulo",
-        telefone: "(11) 3456-7890",
-        website: "Não possui",
-        instagram: "@paodouradosp",
-        facebook: "facebook.com/paodouradosp",
-        endereco: "Rua das Flores, 123 - São Paulo, SP",
-        score: 82
-    },
-
-    {
-        id: 2,
-        nome: "Salão Beleza Real",
-        categoria: "Salão de Beleza",
-        cidade: "Rio de Janeiro",
-        telefone: "(21) 2345-6789",
-        website: "Não possui",
-        instagram: "@belezareal",
-        facebook: "facebook.com/belezareal",
-        endereco: "Rua das Palmeiras, 456 - Rio de Janeiro, RJ",
-        score: 75
-    },
-
-    {
-        id: 3,
-        nome: "Oficina do Zé",
-        categoria: "Oficina Mecânica",
-        cidade: "Belo Horizonte",
-        telefone: "(31) 3344-5566",
-        website: "Não possui",
-        instagram: "@oficinad oze",
-        facebook: "facebook.com/oficinadoze",
-        endereco: "Av. Central, 789 - Belo Horizonte, MG",
-        score: 91
-    },
-
-    {
-        id: 4,
-        nome: "Boutique Elegance",
-        categoria: "Loja de Roupas",
-        cidade: "Curitiba",
-        telefone: "(41) 3322-1100",
-        website: "Possui",
-        instagram: "@boutiqueelegance",
-        facebook: "facebook.com/boutiqueelegance",
-        endereco: "Rua do Comércio, 100 - Curitiba, PR",
-        score: 45
-    },
-
-    {
-        id: 5,
-        nome: "Clínica Vida Saudável",
-        categoria: "Clínica",
-        cidade: "Brasília",
-        telefone: "(61) 3987-6543",
-        website: "Não possui",
-        instagram: "@vidasaudavel",
-        facebook: "facebook.com/vidasaudavel",
-        endereco: "Quadra 12, 200 - Brasília, DF",
-        score: 88
-    },
-
-    {
-        id: 6,
-        nome: "Pet Shop Amigo Fiel",
-        categoria: "Pet Shop",
-        cidade: "São Paulo",
-        telefone: "(11) 4455-6677",
-        website: "Não possui",
-        instagram: "@amigofiel",
-        facebook: "facebook.com/amigofiel",
-        endereco: "Av. Brasil, 350 - São Paulo, SP",
-        score: 70
-    },
-
-    {
-        id: 7,
-        nome: "Restaurante Sabor da Terra",
-        categoria: "Restaurante",
-        cidade: "Rio de Janeiro",
-        telefone: "(21) 3211-9900",
-        website: "Não possui",
-        instagram: "@sabordaterra",
-        facebook: "facebook.com/sabordaterra",
-        endereco: "Rua 24 de Maio, 400 - Rio de Janeiro, RJ",
-        score: 63
-    },
-
-    {
-        id: 8,
-        nome: "Studio Corte & Cia",
-        categoria: "Salão de Beleza",
-        cidade: "Belo Horizonte",
-        telefone: "(31) 3200-1122",
-        website: "Possui",
-        instagram: "@cortecia",
-        facebook: "facebook.com/cortecia",
-        endereco: "Rua das Flores, 550 - Belo Horizonte, MG",
-        score: 38
-    },
-
-    {
-        id: 9,
-        nome: "Auto Center Rodas Novas",
-        categoria: "Oficina Mecânica",
-        cidade: "Curitiba",
-        telefone: "(41) 3455-8899",
-        website: "Não possui",
-        instagram: "@rodasnovas",
-        facebook: "facebook.com/rodasnovas",
-        endereco: "Av. Brasil, 600 - Curitiba, PR",
-        score: 79
-    },
-
-    {
-        id: 10,
-        nome: "Clínica Odontológica Sorriso",
-        categoria: "Clínica",
-        cidade: "Brasília",
-        telefone: "(61) 3222-4433",
-        website: "Não possui",
-        instagram: "@sorrisoclinica",
-        facebook: "facebook.com/sorrisoclinica",
-        endereco: "Quadra 12, 700 - Brasília, DF",
-        score: 85
-    }
-
-];
-
-
-/* ============================================================
-   ELEMENTOS DO HTML
-   ============================================================ */
-
-const tabelaCorpo =
-    document.getElementById("tabela-corpo");
-
-const buscaForm =
-    document.getElementById("busca-form");
-
-const buscaInput =
-    document.getElementById("busca-input");
-
-const filtrosForm =
-    document.getElementById("filtros-form");
-
-const filtroCidade =
-    document.getElementById("filtro-cidade");
-
-const filtroCategoria =
-    document.getElementById("filtro-categoria");
-
-const filtroScore =
-    document.getElementById("filtro-score-minimo");
-
-const modal =
-    document.getElementById("modal-detalhes");
-
-const modalFechar =
-    document.getElementById("modal-fechar");
-
-const toastContainer =
-    document.getElementById("toast-container");
-
-
-/* ============================================================
-   FUNÇÃO PARA IDENTIFICAR O SCORE
-   ============================================================ */
-
-function obterClasseScore(score) {
-
-    if (score >= 80) {
-
-        return "score-alto";
-
-    }
-
-    if (score >= 50) {
-
-        return "score-medio";
-
-    }
-
-    return "score-baixo";
-}
-
-
-/* ============================================================
-   ATUALIZAR DASHBOARD
-   ============================================================ */
-
-function atualizarDashboard(lista) {
-
-    const empresasAnalisadas =
-        document.getElementById(
-            "card-empresas-analisadas"
-        );
-
-    const empresasSemWebsite =
-        document.getElementById(
-            "card-empresas-sem-website"
-        );
-
-    const scoreMedio =
-        document.getElementById(
-            "card-score-medio"
-        );
-
-    const cidadesConsultadas =
-        document.getElementById(
-            "card-cidades-consultadas"
-        );
-
-
-    /* Total */
-
-    empresasAnalisadas.textContent =
-        lista.length;
-
-
-    /* Empresas sem website */
-
-    const semWebsite =
-        lista.filter(function (empresa) {
-
-            return empresa.website === "Não possui";
-
-        }).length;
-
-
-    empresasSemWebsite.textContent =
-        semWebsite;
-
-
-    /* Score médio */
-
-    if (lista.length > 0) {
-
-        const soma =
-            lista.reduce(function (total, empresa) {
-
-                return total + empresa.score;
-
-            }, 0);
-
-        const media =
-            Math.round(soma / lista.length);
-
-        scoreMedio.textContent =
-            media;
-
-    } else {
-
-        scoreMedio.textContent = "0";
-
-    }
-
-
-    /* Cidades */
-
-    const cidades =
-        new Set(
-            lista.map(function (empresa) {
-
-                return empresa.cidade;
-
-            })
-        );
-
-    cidadesConsultadas.textContent =
-        cidades.size;
-}
-
-
-/* ============================================================
-   RENDERIZAR TABELA
-   ============================================================ */
-
-function renderizarTabela(lista) {
-
-    tabelaCorpo.innerHTML = "";
-
-
-    if (lista.length === 0) {
-
-        const linha =
-            document.createElement("tr");
-
-        linha.innerHTML = `
-            <td colspan="7" style="text-align:center;">
-                Nenhuma empresa encontrada.
-            </td>
-        `;
-
-        tabelaCorpo.appendChild(linha);
-
-        atualizarDashboard([]);
-
-        return;
-    }
-
-
-    lista.forEach(function (empresa) {
-
-        const linha =
-            document.createElement("tr");
-
-
-        const classeScore =
-            obterClasseScore(
-                empresa.score
-            );
-
-
-        linha.innerHTML = `
-
-            <td>
-                <strong>
-                    ${empresa.nome}
-                </strong>
-            </td>
-
-            <td>
-                ${empresa.categoria}
-            </td>
-
-            <td>
-                ${empresa.cidade}
-            </td>
-
-            <td>
-                ${empresa.telefone}
-            </td>
-
-            <td>
-                ${empresa.website}
-            </td>
-
-            <td>
-                <span class="score ${classeScore}">
-                    ${empresa.score}
-                </span>
-            </td>
-
-            <td>
-
-                <button
-                    type="button"
-                    class="btn-detalhes"
-                    data-id="${empresa.id}"
-                >
-                    Ver Detalhes
-                </button>
-
-            </td>
-
-        `;
-
-
-        tabelaCorpo.appendChild(linha);
-
-    });
-
-
-    atualizarDashboard(lista);
-}
-
-
-/* ============================================================
-   ABRIR MODAL
-   ============================================================ */
-
-function abrirModal(empresa) {
-
-    document.getElementById(
-        "modal-nome"
-    ).textContent = empresa.nome;
-
-
-    document.getElementById(
-        "modal-categoria"
-    ).textContent = empresa.categoria;
-
-
-    document.getElementById(
-        "modal-cidade"
-    ).textContent = empresa.cidade;
-
-
-    document.getElementById(
-        "modal-telefone"
-    ).textContent = empresa.telefone;
-
-
-    document.getElementById(
-        "modal-endereco"
-    ).textContent = empresa.endereco;
-
-
-    document.getElementById(
-        "modal-instagram"
-    ).textContent = empresa.instagram;
-
-
-    document.getElementById(
-        "modal-facebook"
-    ).textContent = empresa.facebook;
-
-
-    document.getElementById(
-        "modal-website"
-    ).textContent = empresa.website;
-
-
-    document.getElementById(
-        "modal-score"
-    ).textContent = empresa.score;
-
-
-    modal.hidden = false;
-
-    document.body.style.overflow =
-        "hidden";
-}
-
-
-/* ============================================================
-   FECHAR MODAL
-   ============================================================ */
-
-function fecharModal() {
-
-    modal.hidden = true;
-
-    document.body.style.overflow =
-        "";
-}
-
-
-modalFechar.addEventListener(
-    "click",
-    fecharModal
-);
-
-
-modal.addEventListener(
-    "click",
-    function (event) {
-
-        if (event.target === modal) {
-
-            fecharModal();
-
-        }
-
-    }
-);
-
-
-document.addEventListener(
-    "keydown",
-    function (event) {
-
-        if (
-            event.key === "Escape" &&
-            !modal.hidden
-        ) {
-
-            fecharModal();
-
-        }
-
-    }
-);
-
-
-/* ============================================================
-   CLIQUE NO BOTÃO "VER DETALHES"
-   ============================================================ */
-
-tabelaCorpo.addEventListener(
-    "click",
-    function (event) {
-
-        const botao =
-            event.target.closest(
-                ".btn-detalhes"
-            );
-
-
-        if (!botao) {
-
-            return;
-
-        }
-
-
-        const id =
-            Number(
-                botao.dataset.id
-            );
-
-
-        const empresa =
-            empresas.find(
-                function (empresa) {
-
-                    return empresa.id === id;
-
-                }
-            );
-
-
-        if (empresa) {
-
-            abrirModal(empresa);
-
-        }
-
-    }
-);
-
-
-/* ============================================================
-   TOAST
-   ============================================================ */
-
-function mostrarToast(
-    mensagem,
-    tipo = "sucesso"
-) {
-
-    const toast =
-        document.createElement("div");
-
-
-    toast.className =
-        `toast toast-${tipo}`;
-
-
-    toast.textContent =
-        mensagem;
-
-
-    toastContainer.appendChild(
-        toast
-    );
-
-
-    setTimeout(
-        function () {
-
-            toast.remove();
-
-        },
-        3000
-    );
-}
-
-
-/* ============================================================
-   APLICAR FILTROS
-   ============================================================ */
-
-function aplicarFiltros() {
-
-    const texto =
-        buscaInput.value
-            .trim()
-            .toLowerCase();
-
-
-    const cidade =
-        filtroCidade.value;
-
-
-    const categoria =
-        filtroCategoria.value;
-
-
-    const scoreMinimo =
-        Number(
-            filtroScore.value
-        ) || 0;
-
-
-    const resultado =
-        empresas.filter(
-            function (empresa) {
-
-
-                /* Busca */
-
-                const correspondeBusca =
-                    texto === "" ||
-
-                    empresa.nome
-                        .toLowerCase()
-                        .includes(texto) ||
-
-                    empresa.cidade
-                        .toLowerCase()
-                        .includes(texto) ||
-
-                    empresa.categoria
-                        .toLowerCase()
-                        .includes(texto);
-
-
-                /* Cidade */
-
-                const correspondeCidade =
-                    cidade === "" ||
-
-                    empresa.cidade === cidade;
-
-
-                /* Categoria */
-
-                const correspondeCategoria =
-                    categoria === "" ||
-
-                    empresa.categoria === categoria;
-
-
-                /* Score */
-
-                const correspondeScore =
-                    empresa.score >= scoreMinimo;
-
-
-                return (
-                    correspondeBusca &&
-                    correspondeCidade &&
-                    correspondeCategoria &&
-                    correspondeScore
-                );
-
-            }
-        );
-
-
-    renderizarTabela(resultado);
-
-    mostrarToast(
-        `${resultado.length} empresa(s) encontrada(s).`,
-        "sucesso"
-    );
-}
-
-
-/* ============================================================
-   FORMULÁRIO DE BUSCA
-   ============================================================ */
-
-buscaForm.addEventListener(
-    "submit",
-    function (event) {
-
-        event.preventDefault();
-
-        aplicarFiltros();
-
-    }
-);
-
-
-/* ============================================================
-   FORMULÁRIO DE FILTROS
-   ============================================================ */
-
-filtrosForm.addEventListener(
-    "submit",
-    function (event) {
-
-        event.preventDefault();
-
-        aplicarFiltros();
-
-    }
-);
-
-
-/* ============================================================
-   INICIALIZAÇÃO
-   ============================================================ */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        renderizarTabela(
-            empresas
-        );
-
-    }
-);
+/* ==========================================================================
+   Prospect Local — script.js
+   Protótipo 100% front-end, sem backend e sem bibliotecas externas.
+
+   IDs/classes esperados no HTML (ajuste se o seu markup usar outros nomes):
+   - #searchBtn        -> botão "Buscar Empresas"
+   - #companyList       -> container onde os cards das empresas serão inseridos
+   - #modalOverlay       -> overlay/fundo do modal (clique fora fecha)
+   - #modal          -> caixa do modal
+   - #closeModalBtn      -> botão "Fechar" dentro do modal
+   - #modalName, #modalCategory, #modalCity, #modalPhone,
+    #modalWebsite, #modalInstagram, #modalFacebook,
+    #modalAddress, #modalScore        -> campos exibidos no modal
+   - #loadingOverlay      -> indicador de carregamento da busca
+   - #toastContainer      -> container onde os toasts serão empilhados
+
+   Se algum elemento não existir no HTML, o script cria um fallback simples
+   automaticamente para não quebrar a demonstração.
+   ========================================================================== */
+
+(function () {
+ "use strict";
+
+ /* ------------------------------------------------------------------ *
+  * 1. DADOS FICTÍCIOS
+  * ------------------------------------------------------------------ */
+
+ var NOMES = [
+  "Padaria Pão Dourado", "Auto Peças Silva", "Clínica OdontoVida",
+  "Studio Beleza & Cia", "Mercado Bom Preço", "Academia PowerFit",
+  "Pet Shop Amigo Fiel", "Restaurante Sabor Caseiro", "Escritório Contábil Lima",
+  "Loja Moda Urbana", "Imobiliária Novo Lar", "Oficina Mecânica Turbo",
+  "Farmácia Vida Plena", "Barbearia Corte Fino", "Distribuidora Central"
+ ];
+
+ var CATEGORIAS = [
+  "Alimentação", "Automotivo", "Saúde", "Beleza e Estética",
+  "Varejo", "Fitness", "Pet Shop", "Serviços Contábeis",
+  "Moda", "Imóveis", "Manutenção", "Farmácia", "Distribuição"
+ ];
+
+ var CIDADES = [
+  "Brasília - DF", "São Paulo - SP", "Rio de Janeiro - RJ",
+  "Belo Horizonte - MG", "Curitiba - PR", "Porto Alegre - RS",
+  "Salvador - BA", "Fortaleza - CE", "Recife - PE", "Goiânia - GO"
+ ];
+
+ var RUAS = [
+  "Rua das Flores", "Av. Central", "Rua 24 de Maio", "Av. Paulista",
+  "Rua das Palmeiras", "Quadra 12", "Rua do Comércio", "Av. Brasil",
+  "Rua Sete de Setembro", "Alameda dos Ipês"
+ ];
+
+ function aleatorio(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+ }
+
+ function itemAleatorio(lista) {
+  return lista[aleatorio(0, lista.length - 1)];
+ }
+
+ function gerarTelefone() {
+  var ddd = aleatorio(11, 99);
+  var parte1 = aleatorio(90000, 99999);
+  var parte2 = aleatorio(1000, 9999);
+  return "(" + ddd + ") " + parte1 + "-" + parte2;
+ }
+
+ function slugify(texto) {
+  return texto
+   .toLowerCase()
+   .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+   .replace(/[^a-z0-9]+/g, "");
+ }
+
+ function gerarEmpresa(id) {
+  var nome = NOMES[id % NOMES.length];
+  var slug = slugify(nome);
+  var score = aleatorio(0, 100);
+
+  return {
+   id: id,
+   nome: nome,
+   categoria: itemAleatorio(CATEGORIAS),
+   cidade: itemAleatorio(CIDADES),
+   telefone: gerarTelefone(),
+   website: "www." + slug + ".com.br",
+   instagram: "@" + slug,
+   facebook: "facebook.com/" + slug,
+   endereco: itemAleatorio(RUAS) + ", " + aleatorio(10, 999),
+   score: score
+  };
+ }
+
+ function gerarEmpresas(quantidade) {
+  var lista = [];
+  for (var i = 1; i <= quantidade; i++) {
+   lista.push(gerarEmpresa(i));
+  }
+  return lista;
+ }
+
+ var QUANTIDADE_MINIMA = 12; // mínimo exigido: 10
+ var empresas = gerarEmpresas(QUANTIDADE_MINIMA);
+
+ /* ------------------------------------------------------------------ *
+  * 2. UTILITÁRIOS DE COR DE SCORE
+  * ------------------------------------------------------------------ */
+
+ function corDoScore(score) {
+  if (score >= 80) return { classe: "badge--success", label: "Alto" };
+  if (score >= 50) return { classe: "badge--warning", label: "Médio" };
+  return { classe: "badge--danger", label: "Baixo" };
+ }
+
+ /* ------------------------------------------------------------------ *
+  * 3. FALLBACKS DE ELEMENTOS (garante que a demo funcione mesmo que o
+  *  HTML não tenha todos os elementos previstos)
+  * ------------------------------------------------------------------ */
+
+ function garantirElemento(id, criarFn) {
+  var el = document.getElementById(id);
+  if (!el) {
+   el = criarFn();
+   el.id = id;
+   document.body.appendChild(el);
+  }
+  return el;
+ }
+
+ var companyList = garantirElemento("companyList", function () {
+  var div = document.createElement("div");
+  div.className = "company-grid";
+  return div;
+ });
+
+ var toastContainer = garantirElemento("toastContainer", function () {
+  var div = document.createElement("div");
+  div.className = "toast-container";
+  return div;
+ });
+
+ var loadingOverlay = garantirElemento("loadingOverlay", function () {
+  var div = document.createElement("div");
+  div.className = "loading-overlay";
+  div.innerText = "Buscando empresas...";
+  return div;
+ });
+
+ var modalOverlay = garantirElemento("modalOverlay", function () {
+  var div = document.createElement("div");
+  div.className = "modal-overlay";
+  div.style.display = "none";
+  return div;
+ });
+
+ var modal = document.getElementById("modal");
+ if (!modal) {
+  modal = document.createElement("div");
+  modal.id = "modal";
+  modal.className = "modal";
+  modal.innerHTML =
+   '<div class="modal__header">' +
+   ' <h3 id="modalName"></h3>' +
+   ' <button id="closeModalBtn" class="modal__close" aria-label="Fechar">&times;</button>' +
+   '</div>' +
+   '<div class="modal__body">' +
+   ' <dl class="modal-detalhes-lista">' +
+   '  <dt>Categoria</dt><dd id="modalCategory"></dd>' +
+   '  <dt>Cidade</dt><dd id="modalCity"></dd>' +
+   '  <dt>Telefone</dt><dd id="modalPhone"></dd>' +
+   '  <dt>Website</dt><dd id="modalWebsite"></dd>' +
+   '  <dt>Instagram</dt><dd id="modalInstagram"></dd>' +
+   '  <dt>Facebook</dt><dd id="modalFacebook"></dd>' +
+   '  <dt>Endereço</dt><dd id="modalAddress"></dd>' +
+   '  <dt>Score</dt><dd><span id="modalScore" class="badge"></span></dd>' +
+   ' </dl>' +
+   '</div>';
+  modalOverlay.appendChild(modal);
+ }
+
+ if (!modalOverlay.contains(modal)) {
+  modalOverlay.appendChild(modal);
+ }
+
+ var closeModalBtn = document.getElementById("closeModalBtn");
+
+ var searchBtn = document.getElementById("searchBtn");
+ if (!searchBtn) {
+  searchBtn = document.createElement("button");
+  searchBtn.id = "searchBtn";
+  searchBtn.className = "btn btn-primary";
+  searchBtn.innerText = "Buscar Empresas";
+  document.body.insertBefore(searchBtn, document.body.firstChild);
+ }
+
+ /* ------------------------------------------------------------------ *
+  * 4. TOASTS
+  * ------------------------------------------------------------------ */
+
+ function mostrarToast(mensagem, tipo) {
+  tipo = tipo || "info"; // "success" | "error" | "info"
+
+  var toast = document.createElement("div");
+  toast.innerText = mensagem;
+  toast.className = "toast toast--" + tipo;
+  toast.style.opacity = "0";
+  toast.style.transform = "translateY(-10px)";
+
+  toastContainer.appendChild(toast);
+
+  // força reflow para animar a entrada
+  requestAnimationFrame(function () {
+   toast.style.opacity = "1";
+   toast.style.transform = "translateY(0)";
+  });
+
+  setTimeout(function () {
+   toast.style.opacity = "0";
+   toast.style.transform = "translateY(-10px)";
+   setTimeout(function () {
+    if (toast.parentNode) toast.parentNode.removeChild(toast);
+   }, 300);
+  }, 3000);
+ }
+
+ /* ------------------------------------------------------------------ *
+  * 5. RENDERIZAÇÃO DOS CARDS DE EMPRESA
+  * ------------------------------------------------------------------ */
+
+ function criarCardEmpresa(empresa) {
+  var scoreInfo = corDoScore(empresa.score);
+
+  var card = document.createElement("div");
+  card.className = "company-card";
+  card.setAttribute("data-id", empresa.id);
+
+  card.innerHTML =
+   '<h3 class="company-card__name">' + empresa.nome + '</h3>' +
+   '<p class="company-card__meta">' + empresa.categoria + ' • ' + empresa.cidade + '</p>' +
+   '<span class="badge ' + scoreInfo.classe + '">Score: ' + empresa.score + ' (' + scoreInfo.label + ')</span>';
+
+  card.addEventListener("click", function () {
+   abrirModal(empresa);
+  });
+
+  return card;
+ }
+
+ function renderizarEmpresas(lista) {
+  companyList.innerHTML = "";
+  lista.forEach(function (empresa) {
+   companyList.appendChild(criarCardEmpresa(empresa));
+  });
+ }
+
+ /* ------------------------------------------------------------------ *
+  * 6. MODAL: abrir / fechar
+  * ------------------------------------------------------------------ */
+
+ function abrirModal(empresa) {
+  var scoreInfo = corDoScore(empresa.score);
+
+  setTextoSeExistir("modalName", empresa.nome);
+  setTextoSeExistir("modalCategory", empresa.categoria);
+  setTextoSeExistir("modalCity", empresa.cidade);
+  setTextoSeExistir("modalPhone", empresa.telefone);
+  setTextoSeExistir("modalWebsite", empresa.website);
+  setTextoSeExistir("modalInstagram", empresa.instagram);
+  setTextoSeExistir("modalFacebook", empresa.facebook);
+  setTextoSeExistir("modalAddress", empresa.endereco);
+
+  var modalScoreEl = document.getElementById("modalScore");
+  if (modalScoreEl) {
+   modalScoreEl.innerText = empresa.score + " (" + scoreInfo.label + ")";
+   modalScoreEl.className = "badge " + scoreInfo.classe;
+  }
+
+  modalOverlay.removeAttribute("hidden");
+  modalOverlay.style.display = "flex";
+  document.body.style.overflow = "hidden";
+ }
+
+ function fecharModal() {
+  modalOverlay.style.display = "none";
+  modalOverlay.setAttribute("hidden", "");
+  document.body.style.overflow = "";
+ }
+
+ function setTextoSeExistir(id, valor) {
+  var el = document.getElementById(id);
+  if (el) el.innerText = valor;
+ }
+
+ // Fechar pelo botão
+ document.addEventListener("click", function (event) {
+  if (event.target && event.target.id === "closeModalBtn") {
+   fecharModal();
+  }
+ });
+
+ // Fechar clicando fora do modal (no overlay, fora da caixa)
+ modalOverlay.addEventListener("click", function (event) {
+  if (event.target === modalOverlay) {
+   fecharModal();
+  }
+ });
+
+ // Fechar com tecla ESC (extra, não quebra nada se não usado)
+ document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape" && modalOverlay.style.display === "flex") {
+   fecharModal();
+  }
+ });
+
+ /* ------------------------------------------------------------------ *
+  * 7. SIMULAÇÃO DE BUSCA
+  * ------------------------------------------------------------------ */
+
+ function simularBusca() {
+  loadingOverlay.style.display = "flex";
+  searchBtn.disabled = true;
+
+  setTimeout(function () {
+   // Gera um novo conjunto de empresas fictícias a cada busca
+   empresas = gerarEmpresas(QUANTIDADE_MINIMA);
+   renderizarEmpresas(empresas);
+
+   loadingOverlay.style.display = "none";
+   searchBtn.disabled = false;
+
+   mostrarToast("Consulta concluída", "success");
+  }, 2000);
+ }
+
+ searchBtn.addEventListener("click", simularBusca);
+
+ /* ------------------------------------------------------------------ *
+  * 8. INICIALIZAÇÃO
+  * ------------------------------------------------------------------ */
+
+ document.addEventListener("DOMContentLoaded", function () {
+  renderizarEmpresas(empresas);
+ });
+
+ // Caso o script seja carregado após o DOMContentLoaded já ter disparado
+ if (document.readyState === "interactive" || document.readyState === "complete") {
+  renderizarEmpresas(empresas);
+ }
+
+})();
