@@ -1,23 +1,3 @@
-/* ==========================================================================
-   Prospect Local — script.js
-   Protótipo 100% front-end, sem backend e sem bibliotecas externas.
-
-   IDs/classes esperados no HTML (ajuste se o seu markup usar outros nomes):
-   - #searchBtn        -> botão "Buscar Empresas"
-   - #companyList       -> container onde os cards das empresas serão inseridos
-   - #modalOverlay       -> overlay/fundo do modal (clique fora fecha)
-   - #modal          -> caixa do modal
-   - #closeModalBtn      -> botão "Fechar" dentro do modal
-   - #modalName, #modalCategory, #modalCity, #modalPhone,
-    #modalWebsite, #modalInstagram, #modalFacebook,
-    #modalAddress, #modalScore        -> campos exibidos no modal
-   - #loadingOverlay      -> indicador de carregamento da busca
-   - #toastContainer      -> container onde os toasts serão empilhados
-
-   Se algum elemento não existir no HTML, o script cria um fallback simples
-   automaticamente para não quebrar a demonstração.
-   ========================================================================== */
-
 (function () {
  "use strict";
 
@@ -84,7 +64,7 @@
    categoria: itemAleatorio(CATEGORIAS),
    cidade: itemAleatorio(CIDADES),
    telefone: gerarTelefone(),
-   website: "www." + slug + ".com.br",
+   website: "Não Encontrado",
    instagram: "@" + slug,
    facebook: "facebook.com/" + slug,
    endereco: itemAleatorio(RUAS) + ", " + aleatorio(10, 999),
