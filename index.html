@@ -1,253 +1,462 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Prospect Local</title>
-    <link rel="stylesheet" href="styles.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./styles.css">
 </head>
+
 <body>
 
     <!-- ===================== HEADER ===================== -->
-    <header id="header">
-        <div class="logo">
-            <h1>Prospect Local</h1>
+    <header id="header" class="header">
+
+        <div class="header__brand">
+            <div class="header__brand-icon">P</div>
+            <span>Prospect Local</span>
         </div>
 
-        <form id="busca-form" role="search">
-            <label for="busca-input">Buscar</label>
-            <input type="search" id="busca-input" name="busca" placeholder="Buscar empresa, cidade ou categoria...">
-            <button type="submit">Buscar</button>
+        <form id="busca-form" class="header__search" role="search">
+
+            <input
+                type="search"
+                id="busca-input"
+                name="busca"
+                placeholder="Buscar empresa, cidade ou categoria..."
+            >
+
+            <button type="submit" class="btn btn-primary">
+                Buscar
+            </button>
+
         </form>
 
-        <nav id="menu-principal">
-            <ul>
-                <li><a href="#dashboard">Dashboard</a></li>
-                <li><a href="#filtros">Filtros</a></li>
-                <li><a href="#tabela-empresas">Empresas</a></li>
-                <li><a href="#">Relatórios</a></li>
-                <li><a href="#">Configurações</a></li>
-            </ul>
-        </nav>
+        <div class="header__actions">
+
+            <nav id="menu-principal">
+                <ul>
+                    <li>
+                        <a href="#dashboard">Dashboard</a>
+                    </li>
+
+                    <li>
+                        <a href="#filtros">Filtros</a>
+                    </li>
+
+                    <li>
+                        <a href="#tabela-empresas">Empresas</a>
+                    </li>
+
+                    <li>
+                        <a href="#">Relatórios</a>
+                    </li>
+
+                    <li>
+                        <a href="#">Configurações</a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+
     </header>
 
-    <main>
 
-        <!-- ===================== DASHBOARD ===================== -->
-        <section id="dashboard" aria-labelledby="dashboard-titulo">
-            <h2 id="dashboard-titulo">Dashboard</h2>
+    <!-- ===================== CONTEÚDO ===================== -->
+    <main class="main-content">
 
-            <div class="cards-container">
-                <article class="card" id="card-empresas-analisadas">
-                    <h3>Empresas Analisadas</h3>
-                    <p class="card-valor">1.248</p>
-                </article>
+        <div class="content-area">
 
-                <article class="card" id="card-empresas-sem-website">
-                    <h3>Empresas sem Website</h3>
-                    <p class="card-valor">732</p>
-                </article>
 
-                <article class="card" id="card-score-medio">
-                    <h3>Score Médio</h3>
-                    <p class="card-valor">68</p>
-                </article>
+            <!-- ===================== DASHBOARD ===================== -->
 
-                <article class="card" id="card-cidades-consultadas">
-                    <h3>Cidades Consultadas</h3>
-                    <p class="card-valor">24</p>
-                </article>
-            </div>
-        </section>
+            <section id="dashboard">
 
-        <!-- ===================== FILTROS ===================== -->
-        <section id="filtros" aria-labelledby="filtros-titulo">
-            <h2 id="filtros-titulo">Filtros</h2>
+                <div class="dashboard-header">
 
-            <form id="filtros-form">
-                <div class="campo-filtro">
-                    <label for="filtro-cidade">Cidade</label>
-                    <select id="filtro-cidade" name="cidade">
-                        <option value="">Todas</option>
-                        <option value="sao-paulo">São Paulo</option>
-                        <option value="rio-de-janeiro">Rio de Janeiro</option>
-                        <option value="belo-horizonte">Belo Horizonte</option>
-                        <option value="curitiba">Curitiba</option>
-                        <option value="brasilia">Brasília</option>
-                    </select>
+                    <div>
+                        <h1>Dashboard</h1>
+
+                        <p>
+                            Visão geral das empresas analisadas.
+                        </p>
+                    </div>
+
                 </div>
 
-                <div class="campo-filtro">
-                    <label for="filtro-categoria">Categoria</label>
-                    <select id="filtro-categoria" name="categoria">
-                        <option value="">Todas</option>
-                        <option value="restaurante">Restaurante</option>
-                        <option value="salao-beleza">Salão de Beleza</option>
-                        <option value="oficina-mecanica">Oficina Mecânica</option>
-                        <option value="loja-roupas">Loja de Roupas</option>
-                        <option value="clinica">Clínica</option>
-                        <option value="pet-shop">Pet Shop</option>
-                    </select>
+
+                <div class="dashboard-grid">
+
+                    <article class="card">
+
+                        <div class="card__title">
+                            Empresas Analisadas
+                        </div>
+
+                        <div
+                            class="card__value"
+                            id="card-empresas-analisadas"
+                        >
+                            10
+                        </div>
+
+                    </article>
+
+
+                    <article class="card">
+
+                        <div class="card__title">
+                            Empresas sem Website
+                        </div>
+
+                        <div
+                            class="card__value"
+                            id="card-empresas-sem-website"
+                        >
+                            8
+                        </div>
+
+                    </article>
+
+
+                    <article class="card">
+
+                        <div class="card__title">
+                            Score Médio
+                        </div>
+
+                        <div
+                            class="card__value"
+                            id="card-score-medio"
+                        >
+                            72
+                        </div>
+
+                    </article>
+
+
+                    <article class="card">
+
+                        <div class="card__title">
+                            Cidades Consultadas
+                        </div>
+
+                        <div
+                            class="card__value"
+                            id="card-cidades-consultadas"
+                        >
+                            5
+                        </div>
+
+                    </article>
+
                 </div>
 
-                <div class="campo-filtro">
-                    <label for="filtro-score-minimo">Score mínimo</label>
-                    <input type="number" id="filtro-score-minimo" name="score-minimo" min="0" max="100" step="1" placeholder="0">
+            </section>
+
+
+            <!-- ===================== FILTROS ===================== -->
+
+            <section
+                id="filtros"
+                class="card card--panel"
+            >
+
+                <h2>Filtros</h2>
+
+
+                <form id="filtros-form">
+
+                    <div class="form-row">
+
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="filtro-cidade"
+                            >
+                                Cidade
+                            </label>
+
+                            <select
+                                id="filtro-cidade"
+                                class="form-control"
+                            >
+
+                                <option value="">
+                                    Todas
+                                </option>
+
+                                <option value="São Paulo">
+                                    São Paulo
+                                </option>
+
+                                <option value="Rio de Janeiro">
+                                    Rio de Janeiro
+                                </option>
+
+                                <option value="Belo Horizonte">
+                                    Belo Horizonte
+                                </option>
+
+                                <option value="Curitiba">
+                                    Curitiba
+                                </option>
+
+                                <option value="Brasília">
+                                    Brasília
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="filtro-categoria"
+                            >
+                                Categoria
+                            </label>
+
+                            <select
+                                id="filtro-categoria"
+                                class="form-control"
+                            >
+
+                                <option value="">
+                                    Todas
+                                </option>
+
+                                <option value="Restaurante">
+                                    Restaurante
+                                </option>
+
+                                <option value="Salão de Beleza">
+                                    Salão de Beleza
+                                </option>
+
+                                <option value="Oficina Mecânica">
+                                    Oficina Mecânica
+                                </option>
+
+                                <option value="Loja de Roupas">
+                                    Loja de Roupas
+                                </option>
+
+                                <option value="Clínica">
+                                    Clínica
+                                </option>
+
+                                <option value="Pet Shop">
+                                    Pet Shop
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label
+                                class="form-label"
+                                for="filtro-score-minimo"
+                            >
+                                Score mínimo
+                            </label>
+
+                            <input
+                                type="number"
+                                id="filtro-score-minimo"
+                                class="form-control"
+                                min="0"
+                                max="100"
+                                step="1"
+                                placeholder="0"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group form-button">
+
+                            <button
+                                type="submit"
+                                id="btn-buscar-empresas"
+                                class="btn btn-primary"
+                            >
+                                Buscar Empresas
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- ===================== TABELA ===================== -->
+
+            <section
+                id="tabela-empresas"
+                class="card card--panel"
+            >
+
+                <div class="dashboard-header">
+
+                    <div>
+                        <h2>Empresas</h2>
+
+                        <p>
+                            Lista de empresas identificadas.
+                        </p>
+                    </div>
+
                 </div>
 
-                <button type="submit" id="btn-buscar-empresas">Buscar Empresas</button>
-            </form>
-        </section>
 
-        <!-- ===================== TABELA DE EMPRESAS ===================== -->
-        <section id="tabela-empresas" aria-labelledby="tabela-empresas-titulo">
-            <h2 id="tabela-empresas-titulo">Empresas</h2>
+                <div class="table-wrapper">
 
-            <table>
-                <caption>Lista de empresas identificadas</caption>
-                <thead>
-                    <tr>
-                        <th scope="col">Empresa</th>
-                        <th scope="col">Categoria</th>
-                        <th scope="col">Cidade</th>
-                        <th scope="col">Telefone</th>
-                        <th scope="col">Website</th>
-                        <th scope="col">Score</th>
-                        <th scope="col">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr data-empresa-id="1">
-                        <td>Padaria Pão Dourado</td>
-                        <td>Restaurante</td>
-                        <td>São Paulo</td>
-                        <td>(11) 3456-7890</td>
-                        <td>Não possui</td>
-                        <td>82</td>
-                        <td><button type="button" class="btn-detalhes" data-modal-target="modal-detalhes">Ver Detalhes</button></td>
-                    </tr>
-                    <tr data-empresa-id="2">
-                        <td>Salão Beleza Real</td>
-                        <td>Salão de Beleza</td>
-                        <td>Rio de Janeiro</td>
-                        <td>(21) 2345-6789</td>
-                        <td>Não possui</td>
-                        <td>75</td>
-                        <td><button type="button" class="btn-detalhes" data-modal-target="modal-detalhes">Ver Detalhes</button></td>
-                    </tr>
-                    <tr data-empresa-id="3">
-                        <td>Oficina do Zé</td>
-                        <td>Oficina Mecânica</td>
-                        <td>Belo Horizonte</td>
-                        <td>(31) 3344-5566</td>
-                        <td>Não possui</td>
-                        <td>91</td>
-                        <td><button type="button" class="btn-detalhes" data-modal-target="modal-detalhes">Ver Detalhes</button></td>
-                    </tr>
-                    <tr data-empresa-id="4">
-                        <td>Boutique Elegance</td>
-                        <td>Loja de Roupas</td>
-                        <td>Curitiba</td>
-                        <td>(41) 3322-1100</td>
-                        <td>Possui</td>
-                        <td>45</td>
-                        <td><button type="button" class="btn-detalhes" data-modal-target="modal-detalhes">Ver Detalhes</button></td>
-                    </tr>
-                    <tr data-empresa-id="5">
-                        <td>Clínica Vida Saudável</td>
-                        <td>Clínica</td>
-                        <td>Brasília</td>
-                        <td>(61) 3987-6543</td>
-                        <td>Não possui</td>
-                        <td>88</td>
-                        <td><button type="button" class="btn-detalhes" data-modal-target="modal-detalhes">Ver Detalhes</button></td>
-                    </tr>
-                    <tr data-empresa-id="6">
-                        <td>Pet Shop Amigo Fiel</td>
-                        <td>Pet Shop</td>
-                        <td>São Paulo</td>
-                        <td>(11) 4455-6677</td>
-                        <td>Não possui</td>
-                        <td>70</td>
-                        <td><button type="button" class="btn-detalhes" data-modal-target="modal-detalhes">Ver Detalhes</button></td>
-                    </tr>
-                    <tr data-empresa-id="7">
-                        <td>Restaurante Sabor da Terra</td>
-                        <td>Restaurante</td>
-                        <td>Rio de Janeiro</td>
-                        <td>(21) 3211-9900</td>
-                        <td>Não possui</td>
-                        <td>63</td>
-                        <td><button type="button" class="btn-detalhes" data-modal-target="modal-detalhes">Ver Detalhes</button></td>
-                    </tr>
-                    <tr data-empresa-id="8">
-                        <td>Studio Corte & Cia</td>
-                        <td>Salão de Beleza</td>
-                        <td>Belo Horizonte</td>
-                        <td>(31) 3200-1122</td>
-                        <td>Possui</td>
-                        <td>38</td>
-                        <td><button type="button" class="btn-detalhes" data-modal-target="modal-detalhes">Ver Detalhes</button></td>
-                    </tr>
-                    <tr data-empresa-id="9">
-                        <td>Auto Center Rodas Novas</td>
-                        <td>Oficina Mecânica</td>
-                        <td>Curitiba</td>
-                        <td>(41) 3455-8899</td>
-                        <td>Não possui</td>
-                        <td>79</td>
-                        <td><button type="button" class="btn-detalhes" data-modal-target="modal-detalhes">Ver Detalhes</button></td>
-                    </tr>
-                    <tr data-empresa-id="10">
-                        <td>Clínica Odontológica Sorriso</td>
-                        <td>Clínica</td>
-                        <td>Brasília</td>
-                        <td>(61) 3222-4433</td>
-                        <td>Não possui</td>
-                        <td>85</td>
-                        <td><button type="button" class="btn-detalhes" data-modal-target="modal-detalhes">Ver Detalhes</button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+                    <table class="table">
+
+                        <caption class="sr-only">
+                            Lista de empresas identificadas
+                        </caption>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Empresa</th>
+
+                                <th>Categoria</th>
+
+                                <th>Cidade</th>
+
+                                <th>Telefone</th>
+
+                                <th>Website</th>
+
+                                <th>Score</th>
+
+                                <th>Ações</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="tabela-corpo">
+
+                            <!-- JavaScript preencherá aqui -->
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+        </div>
 
     </main>
 
-    <!-- ===================== MODAL DE DETALHES ===================== -->
-    <div id="modal-detalhes" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-detalhes-titulo" hidden>
-        <div class="modal-conteudo">
-            <button type="button" class="modal-fechar" aria-label="Fechar">&times;</button>
 
-            <h2 id="modal-detalhes-titulo">Detalhes da Empresa</h2>
+    <!-- ===================== MODAL ===================== -->
 
-            <dl class="modal-detalhes-lista">
-                <dt>Nome</dt>
-                <dd data-campo="nome">Padaria Pão Dourado</dd>
+    <div
+        id="modal-detalhes"
+        class="modal-overlay"
+        hidden
+    >
 
-                <dt>Categoria</dt>
-                <dd data-campo="categoria">Restaurante</dd>
+        <div
+            class="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-detalhes-titulo"
+        >
 
-                <dt>Telefone</dt>
-                <dd data-campo="telefone">(11) 3456-7890</dd>
+            <div class="modal__header">
 
-                <dt>Endereço</dt>
-                <dd data-campo="endereco">Rua das Flores, 123 - São Paulo, SP</dd>
+                <h3 id="modal-detalhes-titulo">
+                    Detalhes da Empresa
+                </h3>
 
-                <dt>Instagram</dt>
-                <dd data-campo="instagram">@paodouradosp</dd>
+                <button
+                    type="button"
+                    id="modal-fechar"
+                    class="modal__close"
+                    aria-label="Fechar"
+                >
+                    &times;
+                </button>
 
-                <dt>Facebook</dt>
-                <dd data-campo="facebook">facebook.com/paodouradosp</dd>
+            </div>
 
-                <dt>Website</dt>
-                <dd data-campo="website">Não possui</dd>
 
-                <dt>Score</dt>
-                <dd data-campo="score">82</dd>
-            </dl>
+            <div class="modal__body">
+
+                <dl class="modal-detalhes-lista">
+
+                    <dt>Nome</dt>
+                    <dd id="modal-nome"></dd>
+
+                    <dt>Categoria</dt>
+                    <dd id="modal-categoria"></dd>
+
+                    <dt>Cidade</dt>
+                    <dd id="modal-cidade"></dd>
+
+                    <dt>Telefone</dt>
+                    <dd id="modal-telefone"></dd>
+
+                    <dt>Endereço</dt>
+                    <dd id="modal-endereco"></dd>
+
+                    <dt>Instagram</dt>
+                    <dd id="modal-instagram"></dd>
+
+                    <dt>Facebook</dt>
+                    <dd id="modal-facebook"></dd>
+
+                    <dt>Website</dt>
+                    <dd id="modal-website"></dd>
+
+                    <dt>Score</dt>
+                    <dd id="modal-score"></dd>
+
+                </dl>
+
+            </div>
+
         </div>
+
     </div>
 
-    <script src="script.js"></script>
+
+    <!-- ===================== TOAST ===================== -->
+
+    <div id="toast-container"></div>
+
+
+    <!-- ===================== JAVASCRIPT ===================== -->
+
+    <script src="./script.js"></script>
+
 </body>
+
 </html>
